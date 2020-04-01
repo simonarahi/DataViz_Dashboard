@@ -15,7 +15,7 @@ library(readr)
 shinyServer(function(input, output, session) {
     
     df <- reactiveFileReader(
-        intervalMillis = 10000, 
+        intervalMillis = 1000, 
         session = session,
         filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/country_COVID.csv',
         readFunc = read_csv)
