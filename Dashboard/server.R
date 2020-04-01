@@ -11,11 +11,13 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(readr)
+library(utils)
+library(httr)
 
 shinyServer(function(input, output, session) {
     
     df <- reactiveFileReader(
-        intervalMillis = 1000, 
+        intervalMillis = 10000, 
         session = session,
         filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/country_COVID.csv',
         readFunc = read_csv)
@@ -24,7 +26,7 @@ shinyServer(function(input, output, session) {
     
     output$myplot <- renderPlot({
         df <- df()
-        p <- ggplot(df, aes(x=Year,y=Population)) + 
+        p <- ggplot(df, aes(x=month,y=cases)) + 
             geom_point(size=as.numeric(input$size)) +
             guides(size="none")
         return(p)

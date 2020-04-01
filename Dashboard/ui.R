@@ -9,6 +9,8 @@
 
 library(shiny)
 library(shinydashboard)
+library(utils)
+library(httr)
 
 dashboardPage(
     dashboardHeader(title = "My Dashboard"),
