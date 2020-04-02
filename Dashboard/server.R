@@ -29,6 +29,7 @@ shinyServer(function(input, output, session) {
         readFunc = read_csv)
     
     output$mydata <-renderTable({df()})
+    
 
     output$myplot <- renderPlot({
         df <- df()

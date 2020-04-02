@@ -1,0 +1,12 @@
+name: Dashboard_FL_COVID19
+title: Dashboard_FL_COVID19
+username:
+account: simonarahi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2046223
+bundleId: 2961444
+url: https://simonarahi.shinyapps.io/Dashboard_FL_COVID19/
+when: 1585861871.20778
+asMultiple: FALSE
+asStatic: FALSE
