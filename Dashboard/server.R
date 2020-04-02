@@ -11,8 +11,6 @@ library(shiny)
 library(shinydashboard)
 library(ggplot2)
 library(readr)
-library(utils)
-library(httr)
 library(maps)
 library(mapproj)
 
@@ -21,12 +19,13 @@ shinyServer(function(input, output, session) {
     df <- reactiveFileReader(
         intervalMillis = 10000, 
         session = session,
-        filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/CoronaCases.csv',
+        filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/counties.csv',
         readFunc = read_csv)
     
     output$mydata <-renderTable({df()})
+    #countydata <- map_data("county") %>% filter(region=="florida") %>% drop_na()
+    #output$mydata <-renderTable({df()})
   
-    # counties.cases <- corona %>% group_by(County) %>% tally() %>% mutate(County=tolower(County)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie")) %>% drop_na()
     # countydata <- map_data("county") %>% filter(region=="florida") %>% drop_na()
     # covidmap <- left_join(counties.cases, countydata, by=c("County"="subregion"))
     # 
