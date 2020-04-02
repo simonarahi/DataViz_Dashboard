@@ -13,43 +13,50 @@ library(ggplot2)
 library(readr)
 library(utils)
 library(httr)
+library(maps)
+library(mapproj)
 
 shinyServer(function(input, output, session) {
     
     df <- reactiveFileReader(
         intervalMillis = 10000, 
         session = session,
-        filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/country_COVID.csv',
+        filePath = 'https://raw.githubusercontent.com/simonarahi/DataViz_Dashboard/master/CoronaCases.csv',
         readFunc = read_csv)
     
     output$mydata <-renderTable({df()})
-    
-    output$myplot <- renderPlot({
-        df <- df()
-        p <- ggplot(df, aes(x=month,y=cases)) + 
-            geom_point(size=as.numeric(input$size)) +
-            guides(size="none")
-        return(p)
-    })
-    
-    output$nrows <- renderValueBox({
-        nr <- nrow(df())
-        valueBox(
-            value = nr,
-            subtitle = "Number of Rows",
-            icon = icon("table"),
-            color = if (nr <=6) "yellow" else "aqua"
-        )
-    })
-    
-    output$ncol <- renderInfoBox({
-        nc <- ncol(df())
-        infoBox(
-            value = nc,
-            title = "Colums",
-            icon = icon("list"),
-            color = "purple",
-            fill=TRUE)
-    })
+  
+    # counties.cases <- corona %>% group_by(County) %>% tally() %>% mutate(County=tolower(County)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie")) %>% drop_na()
+    # countydata <- map_data("county") %>% filter(region=="florida") %>% drop_na()
+    # covidmap <- left_join(counties.cases, countydata, by=c("County"="subregion"))
+    # 
+    # output$myplot <- renderPlot({
+    #     df <- df()
+    #     p <- ggplot(covidmap, aes(x=long, y=lat, group=group, fill=wbmap$n)) + 
+    #         geom_polygon(color="black", size=0.5) + theme_minimal() + 
+    #         coord_map(projection = "mercator", xlim=c(-90, -77), ylim=c(23, 33)) + 
+    #         labs(title="COVID-19 Cases in Florida by County", fill="Number of Cases") 
+    #     return(p)
+    # })
+    # 
+    # output$nrows <- renderValueBox({
+    #     nr <- nrow(df())
+    #     valueBox(
+    #         value = nr,
+    #         subtitle = "Number of Rows",
+    #         icon = icon("table"),
+    #         color = if (nr <=6) "yellow" else "aqua"
+    #     )
+    # })
+    # 
+    # output$ncol <- renderInfoBox({
+    #     nc <- ncol(df())
+    #     infoBox(
+    #         value = nc,
+    #         title = "Colums",
+    #         icon = icon("list"),
+    #         color = "purple",
+    #         fill=TRUE)
+    # })
     
 })
