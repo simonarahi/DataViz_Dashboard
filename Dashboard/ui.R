@@ -20,7 +20,7 @@ dashboardPage(
         fluidRow(
             box(width=6, 
                 status="info", 
-                title="Myplot",
+                title="COVID-19 Cases in Florida by County",
                 solidHeader = TRUE,
                 plotOutput("myplot")
             ),
