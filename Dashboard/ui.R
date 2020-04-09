@@ -9,44 +9,55 @@
 
 library(shiny)
 library(shinydashboard)
+library(shinyjs)
+
+sidebar <- dashboardSidebar(
+    sidebarMenu(
+        menuItem("Dashboard", tabName = "1", icon = icon("dashboard")
+        ),
+        menuItem("Plot", tabName = "2")  
+    )
+  
+    )
+
+body <- dashboardBody(
+    tabItems(
+        tabItem(tabName = "1",
+                fluidRow(
+                    box(title = "COVID-19 Florida Map by County", plotOutput("mymap")),
+                    box(title = "Data Frame", status = "warning", solidHeader = TRUE,
+                            tableOutput("mydata"),
+                        
+                    )
+                  
+                )
+                
+                ),
+        tabItem(tabName = "2", h2("Plot tab content"))
+    )
+    
+        # Boxes need to be put in a row (or column)
+    # fluidRow(
+    #     
+    #     box(width=6,
+    #         status="warning",
+    #         title = "Data Frame",
+    #         solidHeader = TRUE,
+    #         collapsible = TRUE,
+    #         footer="Read Remotely from File",
+    #         tableOutput("mydata")
+    #         )
+    #     ),
+    #     ## Add some more info boxes
+    # fluidRow(
+    #     valueBoxOutput(width=4, "nrows"),
+    #     infoBoxOutput(width=6, "ncol")
+    #     )
+    )
 
 dashboardPage(
     dashboardHeader(title = "My Dashboard"),
-    dashboardSidebar(
-        sliderInput("size", "Size of Points:", min=0.2, max=5, value=2)
-    ),
-    dashboardBody(
-        # Boxes need to be put in a row (or column)
-        fluidRow(
-            tabBox(
-              title = "Map",
-              id = "tab1"
-            ),
-            
-            tabBox(
-               title = "Time Series",
-               id = "tab2"
-            ),
-            
-            box(width=6, 
-                status="info", 
-                title="COVID-19 Cases in Florida by County",
-                solidHeader = TRUE,
-                plotOutput("myplot")
-            ),
-            box(width=6, 
-                status="warning", 
-                title = "Data Frame",
-                solidHeader = TRUE, 
-                collapsible = TRUE, 
-                footer="Read Remotely from File",
-                tableOutput("mydata")
-            )
-        ),
-        ## Add some more info boxes
-        fluidRow(
-            valueBoxOutput(width=4, "nrows"),
-            infoBoxOutput(width=6, "ncol")
-        )
-    )
+    sidebar,
+    body
 )
+

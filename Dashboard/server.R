@@ -28,20 +28,24 @@ shinyServer(function(input, output, session) {
         session = session,
         filePath = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv',
         readFunc = read_csv)
+
+
+    output$mydata <- renderTable({
+        counties() %>% filter(state == "Florida") %>% group_by(county) %>% summarise(Cases=as.integer(sum(cases)), Deaths=as.integer(sum(deaths)))
+        
+        })
     
-    
-    output$mydata <- renderTable({states()})
-    # 
-    # 
-    # output$myplot <- renderPlot({
-    #     df <- df()
-    #     covidmap <- covidmap()
-    #     p <- ggplot(covidmap, aes(x=long, y=lat, group=group, fill=covidmap$n)) +
-    #         geom_polygon(color="black", size=0.5) + theme_minimal() +
-    #         coord_map(projection = "mercator", xlim=c(-90, -77), ylim=c(23, 33)) +
-    #         labs(fill="Number of Cases")
-    #     return(p)
-    # })
+
+# 
+#     output$mymap <- renderPlot({
+#         df <- df()
+#         covidmap <- covidmap()
+#         p <- ggplot(covidmap, aes(x=long, y=lat, group=group, fill=covidmap$n)) +
+#             geom_polygon(color="black", size=0.5) + theme_minimal() +
+#             coord_map(projection = "mercator", xlim=c(-90, -77), ylim=c(23, 33)) +
+#             labs(fill="Number of Cases")
+#         return(p)
+#     })
     # 
     # output$nrows <- renderValueBox({
     #     nr <- nrow(df())
