@@ -13,6 +13,7 @@ library(ggplot2)
 library(readr)
 library(maps)
 library(mapproj)
+library(dplyr)
 
 shinyServer(function(input, output, session) {
     
@@ -29,7 +30,7 @@ shinyServer(function(input, output, session) {
         readFunc = read_csv)
     
     
-    output$mydata <-renderTable({states()})
+    output$mydata <- renderTable({states()})
     # 
     # 
     # output$myplot <- renderPlot({

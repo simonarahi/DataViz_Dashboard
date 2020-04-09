@@ -18,6 +18,16 @@ dashboardPage(
     dashboardBody(
         # Boxes need to be put in a row (or column)
         fluidRow(
+            tabBox(
+              title = "Map",
+              id = "tab1"
+            ),
+            
+            tabBox(
+               title = "Time Series",
+               id = "tab2"
+            ),
+            
             box(width=6, 
                 status="info", 
                 title="COVID-19 Cases in Florida by County",
