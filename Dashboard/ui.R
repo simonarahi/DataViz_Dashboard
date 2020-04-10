@@ -13,9 +13,11 @@ library(shinyjs)
 
 sidebar <- dashboardSidebar(
     sidebarMenu(
-        menuItem("Dashboard", tabName = "1", icon = icon("dashboard")
-        ),
-        menuItem("Plot", tabName = "2")  
+      sliderInput("date", "Select Date:",
+                  min = as.Date("2020-01-10"), max = as.Date("2020-04-10"), value = as.Date("2020-04-10"), timeFormat = "%Y-%m-%d"),
+        menuItem("Dashboard", tabName = "1", icon = icon("dashboard")),
+        
+        menuItem("Plots", tabName = "2", icon = icon("chart-line"))  
     )
   
     )
@@ -24,22 +26,31 @@ body <- dashboardBody(
     tabItems(
         tabItem(tabName = "1",
                 fluidRow(
+                  box(title = "Select Options to Plot", width = 4, solidHeader = TRUE, color="purple", "BOx")
+                ),
+                fluidRow(
                     box(title = "COVID-19 Florida Map by County", plotOutput("mymap")),
-                    box(title = "Data Frame", status = "warning", solidHeader = TRUE,
+                    box(title = "Data Frame", 
+                        status = "warning", solidHeader = TRUE,
                             tableOutput("mydata")
-                        
                     )
-                  
                 )
                 
                 ),
+                
         tabItem(tabName = "2",
+                fluidRow(column(4, selectizeInput("state", label=h5("State"), choices=NULL, width="100%")
+                  ),
+                  column(4, selectizeInput("county", label=h5("County"), choices=NULL, width="100%")
+                  ),
                 fluidRow(
                     box(title = "Time Series Graph", solidHeader = TRUE,
-                        plotOutput("myplot")
+                        plotOutput("myplot")),
+                    box(title = "Forecasting", solidHeader = TRUE, plotOutput("myplot2"))
+                    
                         
-                    )
-                )
+                    
+                ))
     ))
     
         # Boxes need to be put in a row (or column)

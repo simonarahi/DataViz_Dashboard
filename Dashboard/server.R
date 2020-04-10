@@ -31,7 +31,6 @@ shinyServer(function(input, output, session) {
         filePath = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv',
         readFunc = read_csv)
 
-    
 
     output$mymap <- renderPlot({
         counties <- map_data("county") %>% filter(region=="florida")
@@ -49,10 +48,25 @@ shinyServer(function(input, output, session) {
     
     output$mydata <- renderTable({
         
-        corona2 <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% summarise(Cases=as.integer(sum(cases)), Deaths=as.integer(sum(deaths)))
+        corona2 <- corona() %>% filter(state == "Florida") %>%
+            #filter(date==)
+            group_by(county) %>% summarise(Cases=as.integer(sum(cases)), Deaths=as.integer(sum(deaths)))
         return(corona2)
     })
     
+    observeEvent(input$state, {
+        counties = corona() %>%
+            filter(state == input$state) %>% 
+            pull(county)
+        counties = c("<all>", sort(unique(counties)))
+        updateSelectInput(session, "county", choices=counties, selected=counties[1])
+    })
+    
+    # states = sort(unique(allData$`Country/Region`))
+    # 
+    # updateSelectInput(session, "country", choices=countries, selected="China")
+    
+
     output$myplot <- renderPlot({
         corona3 <- corona() %>% 
             group_by(date) %>%
