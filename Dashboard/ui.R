@@ -14,7 +14,7 @@ library(shinyjs)
 sidebar <- dashboardSidebar(
     sidebarMenu(
       sliderInput("date", "Select Date:",
-                  min = as.Date("2020-01-10"), max = as.Date("2020-04-10"), value = as.Date("2020-04-10"), timeFormat = "%Y-%m-%d"),
+                  min = as.Date("2020-03-1"), max = as.Date("2020-04-10"), value = as.Date("2020-04-2"), timeFormat = "%Y-%m-%d"),
         menuItem("Dashboard", tabName = "1", icon = icon("dashboard")),
         
         menuItem("Plots", tabName = "2", icon = icon("chart-line"))  
@@ -26,7 +26,8 @@ body <- dashboardBody(
     tabItems(
         tabItem(tabName = "1",
                 fluidRow(
-                  box(title = "Select Options to Plot", width = 4, solidHeader = TRUE, color="purple", "BOx"),
+                  box(title = "What to Plot", width = 4, height=5, solidHeader = FALSE, color="purple",
+                      radioButtons("options", "Select Output:", c("Cases"="cases", "Deaths"="deaths"), inline = TRUE), plotOutput("mapchart")),
                   infoBoxOutput(width=4, "nrows"),
                   infoBoxOutput(width=4, "ncol")
                 ),
