@@ -54,6 +54,17 @@ shinyServer(function(input, output, session) {
         return(corona2)
     })
     
+    data = reactive({
+        d = corona() %>%
+            filter(state == input$state)
+        if(input$county != "<all>") {
+            d = d %>% 
+                filter(county == input$county) 
+        } else {
+            d = corona()
+        }
+    })
+    
     observeEvent(input$state, {
         counties = corona() %>%
             filter(state == input$state) %>% 
@@ -62,53 +73,60 @@ shinyServer(function(input, output, session) {
         updateSelectInput(session, "county", choices=counties, selected=counties[1])
     })
     
-    # states = sort(unique(allData$`Country/Region`))
-    # 
-    # updateSelectInput(session, "country", choices=countries, selected="China")
+    observeEvent(input$county, {
+        corona <- corona()
+        states = sort(unique(corona$state))
+        updateSelectInput(session, "state", choices=states, selected="Alabama") 
+    })
+
+# 
+#     output$myplot <- renderPlot({
+#         corona3 <- data %>% 
+#             group_by(date) %>%
+#             summarize(sumcases=sum(cases)) %>%
+#             select(date,sumcases) %>% 
+#             mutate(
+#                 time=c(0,cumsum(as.numeric(diff(date)))),
+#                 logsumcases = log(sumcases)
+#             ) %>%
+#             select(date, time, sumcases, logsumcases)
+#         
+#         colnames(corona3) <- c("date", "time", "cases", "logcases")
+#         cutoff <- "2020/04/01"
+#         corona3 <- corona3 %>% filter(date<=cutoff)
+#         plotdata <- pivot_longer(corona3, col=3:4, names_to="Type", values_to="values")
+#         
+#         ggplot(data=plotdata, aes(x=date, y=values)) +
+#             geom_point(size=1.1) +
+#             geom_line() +
+#             facet_wrap(vars(Type), scales = "free_y")
+#         
+#     })
     
 
-    output$myplot <- renderPlot({
-        corona3 <- corona() %>% 
-            group_by(date) %>%
-            summarize(sumcases=sum(cases)) %>%
-            select(date,sumcases) %>% 
-            mutate(
-                time=c(0,cumsum(as.numeric(diff(date)))),
-                logsumcases = log(sumcases)
-            ) %>%
-            select(date, time, sumcases, logsumcases)
-        
-        colnames(corona3) <- c("date", "time", "cases", "logcases")
-        cutoff <- "2020/04/01"
-        corona3 <- corona3 %>% filter(date<=cutoff)
-        plotdata <- pivot_longer(corona3, col=3:4, names_to="Type", values_to="values")
-        
-        ggplot(data=plotdata, aes(x=date, y=values)) +
-            geom_point(size=1.1) +
-            geom_line() +
-            facet_wrap(vars(Type), scales = "free_y")
-        
+    output$nrows <- renderInfoBox({
+        val1 <- corona() %>% filter(state == "Florida") %>%
+            group_by(county) %>% summarise(Deaths=as.integer(sum(deaths)))
+        nr <- sum(val1$Deaths)
+        infoBox(
+            value = nr,
+            title = "Total Deaths",
+            icon = icon("ambulance"),
+            color = "red",
+            fill = TRUE
+        )
     })
-    
-    # 
-    # output$nrows <- renderValueBox({
-    #     nr <- nrow(df())
-    #     valueBox(
-    #         value = nr,
-    #         subtitle = "Number of Rows",
-    #         icon = icon("table"),
-    #         color = if (nr <=6) "yellow" else "aqua"
-    #     )
-    # })
-    # 
-    # output$ncol <- renderInfoBox({
-    #     nc <- ncol(df())
-    #     infoBox(
-    #         value = nc,
-    #         title = "Colums",
-    #         icon = icon("list"),
-    #         color = "purple",
-    #         fill=TRUE)
-    # })
+
+    output$ncol <- renderInfoBox({
+        val <- corona() %>% filter(state == "Florida") %>%
+            group_by(county) %>% summarise(Cases=as.integer(sum(cases)))
+        nc <- sum(val$Cases)
+        infoBox(
+            value = nc,
+            title = "Total Cases",
+            icon = icon("heartbeat"),
+            color = "purple",
+            fill=TRUE)
+    })
     
 })

@@ -26,7 +26,9 @@ body <- dashboardBody(
     tabItems(
         tabItem(tabName = "1",
                 fluidRow(
-                  box(title = "Select Options to Plot", width = 4, solidHeader = TRUE, color="purple", "BOx")
+                  box(title = "Select Options to Plot", width = 4, solidHeader = TRUE, color="purple", "BOx"),
+                  infoBoxOutput(width=4, "nrows"),
+                  infoBoxOutput(width=4, "ncol")
                 ),
                 fluidRow(
                     box(title = "COVID-19 Florida Map by County", plotOutput("mymap")),
@@ -53,23 +55,7 @@ body <- dashboardBody(
                 ))
     ))
     
-        # Boxes need to be put in a row (or column)
-    # fluidRow(
-    #     
-    #     box(width=6,
-    #         status="warning",
-    #         title = "Data Frame",
-    #         solidHeader = TRUE,
-    #         collapsible = TRUE,
-    #         footer="Read Remotely from File",
-    #         tableOutput("mydata")
-    #         )
-    #     ),
-    #     ## Add some more info boxes
-    # fluidRow(
-    #     valueBoxOutput(width=4, "nrows"),
-    #     infoBoxOutput(width=6, "ncol")
-    #     )
+
     )
 
 dashboardPage(
