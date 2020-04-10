@@ -14,6 +14,8 @@ library(readr)
 library(maps)
 library(mapproj)
 library(dplyr)
+library(forcats)
+library(tidyr)
 
 shinyServer(function(input, output, session) {
     
@@ -23,29 +25,57 @@ shinyServer(function(input, output, session) {
         filePath = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv',
         readFunc = read_csv)
     
-    counties <-  reactiveFileReader(
+    corona <-  reactiveFileReader(
         intervalMillis = 10000, 
         session = session,
         filePath = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv',
         readFunc = read_csv)
 
-
-    output$mydata <- renderTable({
-        counties() %>% filter(state == "Florida") %>% group_by(county) %>% summarise(Cases=as.integer(sum(cases)), Deaths=as.integer(sum(deaths)))
-        
-        })
     
 
-# 
-#     output$mymap <- renderPlot({
-#         df <- df()
-#         covidmap <- covidmap()
-#         p <- ggplot(covidmap, aes(x=long, y=lat, group=group, fill=covidmap$n)) +
-#             geom_polygon(color="black", size=0.5) + theme_minimal() +
-#             coord_map(projection = "mercator", xlim=c(-90, -77), ylim=c(23, 33)) +
-#             labs(fill="Number of Cases")
-#         return(p)
-#     })
+    output$mymap <- renderPlot({
+        counties <- map_data("county") %>% filter(region=="florida")
+        corona1 <- corona() %>% group_by(county) %>% summarise(Cases=sum(cases)) %>% mutate(County=tolower(county)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie"))
+        
+        covidmap <- left_join(corona1, counties, by=c("County"="subregion"))
+        
+        p1 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = Cases)) + 
+            geom_polygon(color = "black", size = 0.5) + theme_minimal() +
+            scale_fill_viridis_c() +
+            labs(fill="Number of Cases")
+        
+        return(p1)
+    })
+    
+    output$mydata <- renderTable({
+        
+        corona2 <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% summarise(Cases=as.integer(sum(cases)), Deaths=as.integer(sum(deaths)))
+        return(corona2)
+    })
+    
+    output$myplot <- renderPlot({
+        corona3 <- corona() %>% 
+            group_by(date) %>%
+            summarize(sumcases=sum(cases)) %>%
+            select(date,sumcases) %>% 
+            mutate(
+                time=c(0,cumsum(as.numeric(diff(date)))),
+                logsumcases = log(sumcases)
+            ) %>%
+            select(date, time, sumcases, logsumcases)
+        
+        colnames(corona3) <- c("date", "time", "cases", "logcases")
+        cutoff <- "2020/04/01"
+        corona3 <- corona3 %>% filter(date<=cutoff)
+        plotdata <- pivot_longer(corona3, col=3:4, names_to="Type", values_to="values")
+        
+        ggplot(data=plotdata, aes(x=date, y=values)) +
+            geom_point(size=1.1) +
+            geom_line() +
+            facet_wrap(vars(Type), scales = "free_y")
+        
+    })
+    
     # 
     # output$nrows <- renderValueBox({
     #     nr <- nrow(df())

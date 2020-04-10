@@ -26,15 +26,21 @@ body <- dashboardBody(
                 fluidRow(
                     box(title = "COVID-19 Florida Map by County", plotOutput("mymap")),
                     box(title = "Data Frame", status = "warning", solidHeader = TRUE,
-                            tableOutput("mydata"),
+                            tableOutput("mydata")
                         
                     )
                   
                 )
                 
                 ),
-        tabItem(tabName = "2", h2("Plot tab content"))
-    )
+        tabItem(tabName = "2",
+                fluidRow(
+                    box(title = "Time Series Graph", solidHeader = TRUE,
+                        plotOutput("myplot")
+                        
+                    )
+                )
+    ))
     
         # Boxes need to be put in a row (or column)
     # fluidRow(
