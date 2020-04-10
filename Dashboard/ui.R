@@ -47,9 +47,9 @@ body <- dashboardBody(
                   column(4, selectizeInput("county", label=h5("County"), choices=NULL, width="100%")
                   ),
                 fluidRow(
-                    box(title = "Time Series Graph", solidHeader = TRUE,
+                    box(title = "Coronavirus Cases Over Time", solidHeader = TRUE, status = "primary",
                         plotOutput("myplot")),
-                    box(title = "Forecasting", solidHeader = TRUE, plotOutput("myplot2"))
+                    box(title = "Forecasting", solidHeader = TRUE, status="info", plotOutput("myplot2"))
                     
                         
                     
