@@ -14,7 +14,7 @@ library(shinyjs)
 sidebar <- dashboardSidebar(
     sidebarMenu(
       sliderInput("date", "Select Date:",
-                  min = as.Date("2020-03-1"), max = as.Date("2020-04-10"), value = as.Date("2020-04-2"), timeFormat = "%Y-%m-%d"),
+                  min = as.Date("2020-03-1"), max = as.Date("2020-04-17"), value = as.Date("2020-04-2"), timeFormat = "%Y-%m-%d"),
         menuItem("Dashboard", tabName = "1", icon = icon("dashboard")),
         
         menuItem("Plots", tabName = "2", icon = icon("chart-line"))  
@@ -33,7 +33,7 @@ body <- dashboardBody(
                 ),
                 fluidRow(
                     box(title = "COVID-19 Florida Map by County", plotOutput("mymap")),
-                    box(title = "Data Frame", 
+                    box(title = "Cases and Deaths by County", 
                         status = "warning", solidHeader = TRUE,
                             tableOutput("mydata")
                     )
@@ -60,7 +60,7 @@ body <- dashboardBody(
     )
 
 dashboardPage(
-    dashboardHeader(title = "My Dashboard"),
+    dashboardHeader(title = "COVID-19 Dashboard"),
     sidebar,
     body
 )

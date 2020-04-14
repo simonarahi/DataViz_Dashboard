@@ -36,17 +36,43 @@ shinyServer(function(input, output, session) {
 
      output$mymap <- renderPlot({
          counties <- map_data("county") %>% filter(region=="florida")
-         corona1 <- corona() %>% group_by(county) %>% summarize(Cases=sum(cases)) %>% mutate(County=tolower(county)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie"))
+         corona1 <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% filter(date==max(date)) %>% summarise(cases=sum(cases), deaths=sum(deaths)) %>% mutate(County=tolower(county)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie"))
     
          covidmap <- left_join(corona1, counties, by=c("County"="subregion"))
     
-         p1 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = Cases)) +
+         p1 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = cases)) +
              geom_polygon(color = "black", size = 0.5) + theme_minimal() +
              scale_fill_viridis_c() +
              labs(fill="Number of Cases")
     
          return(p1)
      })
+     
+     
+     output$nrows <- renderInfoBox({
+         val <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% filter(date==max(date)) %>% summarise(cases=sum(cases), deaths=sum(deaths))
+         nr <- sum(val$deaths)
+         infoBox(
+             value = nr,
+             title = "Total Deaths",
+             icon = icon("ambulance"),
+             color = "red",
+             fill = TRUE
+         )
+     })
+     
+     
+     output$ncol <- renderInfoBox({
+         val <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% filter(date==max(date)) %>% summarise(cases=sum(cases), deaths=sum(deaths))
+         nc <- sum(val$cases)
+         infoBox(
+             value = nc,
+             title = "Total Cases",
+             icon = icon("heartbeat"),
+             color = "purple",
+             fill=TRUE)
+     })
+     
 
     output$mydata <- renderTable({
         
@@ -158,30 +184,5 @@ shinyServer(function(input, output, session) {
      #     
      # })
 
-
-    output$nrows <- renderInfoBox({
-        val1 <- corona() %>% filter(state == "Florida") %>%
-            group_by(county) %>% summarize(Deaths=as.integer(sum(deaths)))
-        nr <- sum(val1$Deaths)
-        infoBox(
-            value = nr,
-            title = "Total Deaths",
-            icon = icon("ambulance"),
-            color = "red",
-            fill = TRUE
-        )
-    })
-
-    output$ncol <- renderInfoBox({
-        val <- corona() %>% filter(state == "Florida") %>%
-            group_by(county) %>% summarize(Cases=as.integer(sum(cases)))
-        nc <- sum(val$Cases)
-        infoBox(
-            value = nc,
-            title = "Total Cases",
-            icon = icon("heartbeat"),
-            color = "purple",
-            fill=TRUE)
-    })
     
 })
