@@ -39,13 +39,25 @@ shinyServer(function(input, output, session) {
          corona1 <- corona() %>% filter(state == "Florida") %>% group_by(county) %>% filter(date==max(date)) %>% summarise(cases=sum(cases), deaths=sum(deaths)) %>% mutate(County=tolower(county)) %>% mutate(County = fct_recode(County, `miami-dade` = "dade", `st johns` = "st. johns", `st lucie` = "st. lucie"))
     
          covidmap <- left_join(corona1, counties, by=c("County"="subregion"))
+         
+         if (input$options=='cases'){
+             p1 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = cases)) +
+                 geom_polygon(color = "black", size = 0.5) + theme_minimal() +
+                 scale_fill_viridis_c() +
+                 labs(fill="Number of Cases")
+             
+             return(p1) 
+             
+         } else {
+             p2 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = deaths)) +
+                 geom_polygon(color = "black", size = 0.5) + theme_minimal() +
+                 scale_fill_viridis_c() +
+                 labs(fill="Number of Deaths")
+             
+             return(p2)   
+         }
     
-         p1 <- ggplot(covidmap, aes(x = long, y = lat, group = group, fill = cases)) +
-             geom_polygon(color = "black", size = 0.5) + theme_minimal() +
-             scale_fill_viridis_c() +
-             labs(fill="Number of Cases")
-    
-         return(p1)
+        
      })
      
      
