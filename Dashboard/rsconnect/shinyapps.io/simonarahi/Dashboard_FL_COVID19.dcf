@@ -5,8 +5,8 @@ account: simonarahi
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2046223
-bundleId: 3013281
+bundleId: 3013366
 url: https://simonarahi.shinyapps.io/Dashboard_FL_COVID19/
-when: 1586892655.74106
+when: 1586893743.8216
 asMultiple: FALSE
 asStatic: FALSE

@@ -163,12 +163,12 @@ shinyServer(function(input, output, session) {
           logcaseplot <- ggplot(data=corona1, aes(x=date, y=logcases)) +
               geom_point(size=1.2, col="red") +
               geom_line(aes(y=logfitted), col="blue") +
-              scale_x_date(date_breaks="6 days", date_label="%b %d")
+              scale_x_date(date_breaks="15 days", date_label="%b %d")
           
           caseplot <- ggplot(data=corona1, aes(x=date, y=cases)) +
               geom_point(size=1.2, col="red") +
               geom_line(aes(y=fitted), col="blue") +
-              scale_x_date(date_breaks="6 days", date_label="%b %d")
+              scale_x_date(date_breaks="15 days", date_label="%b %d")
           
           plot_grid(caseplot, logcaseplot, nrow=1, ncol=2)
           
