@@ -49,7 +49,7 @@ body <- dashboardBody(
                 fluidRow(
                     box(title = "Coronavirus Cases Over Time", solidHeader = TRUE, status = "primary",
                         plotOutput("myplot")),
-                    box(title = "Forecasting", solidHeader = TRUE, status="info", plotOutput("myplot2"))
+                    box(title = "Fitted Model", solidHeader = TRUE, status="info", plotOutput("myplot2"))
                     
                         
                     

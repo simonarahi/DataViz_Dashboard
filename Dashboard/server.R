@@ -18,6 +18,7 @@ library(forcats)
 library(tidyr)
 library(broom)
 library(deSolve)
+library(cowplot)
 
 shinyServer(function(input, output, session) {
     
@@ -94,9 +95,6 @@ shinyServer(function(input, output, session) {
         return(corona2)
     })
     
-     # output$mapchart <- renderPlot({
-     #     maps <- switch(input$options, cases=hg, death=fgf, cases)
-     # })
     
     data = reactive({
         d = corona() %>%
@@ -147,19 +145,33 @@ shinyServer(function(input, output, session) {
 
      })
      
-     # output$myplot2 <- renderPlot({
-     #     corona1 <- corona() %>% 
-     #         group_by(date) %>%
-     #         summarize(sumcases=sum(cases)) %>%
-     #         select(date,sumcases) %>% 
-     #         mutate(
-     #             time=c(0,cumsum(as.numeric(diff(date)))),
-     #             logsumcases = log(sumcases)
-     #         ) %>%
-     #         select(date, time, sumcases, logsumcases)
-     #     
-     #     colnames(corona1) <- c("date", "time", "cases", "logcases")
-     #     fit.lm <- lm(logcases ~ time, data=corona1)
+      output$myplot2 <- renderPlot({
+          corona1 <- corona() %>% 
+              group_by(date) %>%
+              summarize(sumcases=sum(cases)) %>%
+              select(date,sumcases) %>% 
+              mutate(
+                  time=c(0,cumsum(as.numeric(diff(date)))),
+                  logsumcases = log(sumcases)
+              ) %>%
+              select(date, time, sumcases, logsumcases)
+          
+          colnames(corona1) <- c("date", "time", "cases", "logcases")
+          fit.lm <- lm(logcases ~ time, data=corona1)
+          corona1$logfitted <- fitted(fit.lm)
+          corona1$fitted <- exp(fitted(fit.lm))
+          logcaseplot <- ggplot(data=corona1, aes(x=date, y=logcases)) +
+              geom_point(size=1.2, col="red") +
+              geom_line(aes(y=logfitted), col="blue") +
+              scale_x_date(date_breaks="6 days", date_label="%b %d")
+          
+          caseplot <- ggplot(data=corona1, aes(x=date, y=cases)) +
+              geom_point(size=1.2, col="red") +
+              geom_line(aes(y=fitted), col="blue") +
+              scale_x_date(date_breaks="6 days", date_label="%b %d")
+          
+          plot_grid(caseplot, logcaseplot, nrow=1, ncol=2)
+          
      #     gamma <- 1/8
      #     beta <- as.numeric(tidy(fit.lm)[2,2]) + gamma
      #     alpha <- exp(as.numeric(tidy(fit.lm)[1,2]))
@@ -194,7 +206,7 @@ shinyServer(function(input, output, session) {
      #         scale_x_date(date_breaks="5 days", date_label="%b %d") +
      #         labs(subtitle="Recovery Period is assumed as 8 days", x="Day", y="Number Infected")
      #     
-     # })
+      })
 
     
 })
