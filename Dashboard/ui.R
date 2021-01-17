@@ -10,11 +10,12 @@
 library(shiny)
 library(shinydashboard)
 library(shinyjs)
+library(lubridate)
 
 sidebar <- dashboardSidebar(
     sidebarMenu(
       sliderInput("date", "Select Date:",
-                  min = as.Date("2020-03-1"), max = as.Date("2020-04-17"), value = as.Date("2020-04-2"), timeFormat = "%Y-%m-%d"),
+                  min = as.Date("2020-03-1"), max = today(), value = as.Date("2020-04-2"), timeFormat = "%Y-%m-%d"),
         menuItem("Dashboard", tabName = "1", icon = icon("dashboard")),
         
         menuItem("Plots", tabName = "2", icon = icon("chart-line"))  
